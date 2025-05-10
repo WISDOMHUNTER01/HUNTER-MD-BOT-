@@ -9,7 +9,7 @@ import {
     useMultiFileAuthState,
     getContentType
 } from '@whiskeysockets/baileys';
-import { Handler, Callupdate, GroupUpdate } from './framework/bugs/joel.js';
+import { Handler, Callupdate, GroupUpdate } from './framework/joel.js';
 import express from 'express';
 import pino from 'pino';
 import fs from 'fs';
@@ -58,7 +58,7 @@ async function downloadSessionData() {
         return false;
     }
 
-    const sessdata = config.SESSION_ID.split("HUNTER-MD-BOT~")[1];
+    const sessdata = config.SESSION_ID.split("JOEL-XMD~")[1];
 
     if (!sessdata || !sessdata.includes("#")) {
         console.error('Invalid SESSION_ID format! It must contain both file ID and decryption key.');
