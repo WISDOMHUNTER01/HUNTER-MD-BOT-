@@ -1,7 +1,6 @@
-import { serialize } from '../../lib/Serializer.js';
-import config from '../../config.cjs';
+import { serialize } from '../lib/Serializer.js';
 
-const antilinkSettings = {}; // Store settings { groupId: { antilink: true/false, antilink2: true/false, warnings: { userId: count } } }
+const antilinkSettings = {}; // In-memory database to store antilink settings for each chat
 
 export const handleAntilink = async (m, sock, logger, isBotAdmins, isAdmins, isCreator) => {
     const PREFIX = /^[\\/!#.]/;
@@ -10,78 +9,86 @@ export const handleAntilink = async (m, sock, logger, isBotAdmins, isAdmins, isC
     const prefix = prefixMatch ? prefixMatch[0] : '/';
     const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
 
-    if (!antilinkSettings[m.from]) {
-        antilinkSettings[m.from] = { antilink: false, antilink2: false, warnings: {} };
-    }
-
-    if (cmd === 'antilink' || cmd === 'antilink2') {
-        if (!m.isGroup) return await sock.sendMessage(m.from, { text: 'This command can only be used in groups.' }, { quoted: m });
-        if (!isBotAdmins) return await sock.sendMessage(m.from, { text: 'The bot needs to be an admin to manage the antilink feature.' }, { quoted: m });
-
-        if (!isAdmins) return await sock.sendMessage(m.from, { text: 'Only admins can modify antilink settings.' }, { quoted: m });
-
+    if (cmd === 'antilink') {
         const args = m.body.slice(prefix.length + cmd.length).trim().split(/\s+/);
         const action = args[0] ? args[0].toLowerCase() : '';
 
-        if (cmd === 'xantilink') {
-            if (action === 'on') {
-                antilinkSettings[m.from].antilink = true;
-                return await sock.sendMessage(m.from, { text: '✅ *Antilink (Delete Only) enabled!*' }, { quoted: m });
-            } 
-            if (action === 'off') {
-                antilinkSettings[m.from].antilink = false;
-                return await sock.sendMessage(m.from, { text: '❌ *Antilink (Delete Only) disabled!*' }, { quoted: m });
-            }
+        if (!m.isGroup) {
+            await sock.sendMessage(m.from, { text: 'This command can only be used in groups.' }, { quoted: m });
+            return;
         }
 
-        if (cmd === 'xntilink2') {
-            if (action === 'on') {
-                antilinkSettings[m.from].antilink2 = true;
-                return await sock.sendMessage(m.from, { text: '✅ *Antilink2 (Warnings & Remove) enabled!*' }, { quoted: m });
-            } 
-            if (action === 'off') {
-                antilinkSettings[m.from].antilink2 = false;
-                return await sock.sendMessage(m.from, { text: '❌ *Antilink2 (Warnings & Remove) disabled!*' }, { quoted: m });
-            }
+        if (!isBotAdmins) {
+            await sock.sendMessage(m.from, { text: 'The bot needs to be an admin to manage the antilink feature.' }, { quoted: m });
+            return;
         }
 
-        return await sock.sendMessage(m.from, {
-            text: `📌 *Usage:*\n- ${prefix}antilink on | off\n- ${prefix}antilink2 on | off`
-        }, { quoted: m });
+        if (action === 'on') {
+            if (isAdmins) {
+                antilinkSettings[m.from] = true;
+                await sock.sendMessage(m.from, { text: 'Antilink feature has been enabled for this chat.' }, { quoted: m });
+            } else {
+                await sock.sendMessage(m.from, { text: 'Only admins can enable the antilink feature.' }, { quoted: m });
+            }
+            return;
+        }
+
+        if (action === 'off') {
+            if (isAdmins) {
+                antilinkSettings[m.from] = false;
+                await sock.sendMessage(m.from, { text: 'Antilink feature has been disabled for this chat.' }, { quoted: m });
+            } else {
+                await sock.sendMessage(m.from, { text: 'Only admins can disable the antilink feature.' }, { quoted: m });
+            }
+            return;
+        }
+
+        await sock.sendMessage(m.from, { text: `Usage: ${prefix + cmd} on\n ${prefix + cmd} off` }, { quoted: m });
+        return;
     }
 
-    if ((antilinkSettings[m.from].antilink || antilinkSettings[m.from].antilink2) && m.body.match(/https?:\/\/[^\s]+/)) {
-        if (!isBotAdmins) return;
-
-        let gclink = `https://chat.whatsapp.com/${await sock.groupInviteCode(m.from)}`;
-        let isLinkThisGc = new RegExp(gclink, 'i');
-        let isgclink = isLinkThisGc.test(m.body);
-
-        if (isgclink) return await sock.sendMessage(m.from, { text: `The link you shared is for this group, so you won't be removed.` });
-
-        if (isAdmins || isCreator) return await sock.sendMessage(m.from, { text: `Admins and the owner are allowed to share links.` });
-
-        await sock.sendMessage(m.from, { delete: m.key });
-
-        if (antilinkSettings[m.from].antilink2) {
-            if (!antilinkSettings[m.from].warnings[m.sender]) {
-                antilinkSettings[m.from].warnings[m.sender] = 0;
+    if (antilinkSettings[m.from]) {
+        if (m.body.match(/(chat.whatsapp.com\/)/gi)) {
+            if (!isBotAdmins) {
+                await sock.sendMessage(m.from, { text: `The bot needs to be an admin to remove links.` });
+                return;
             }
-            antilinkSettings[m.from].warnings[m.sender] += 1;
+            let gclink = `https://chat.whatsapp.com/${await sock.groupInviteCode(m.from)}`;
+            let isLinkThisGc = new RegExp(gclink, 'i');
+            let isgclink = isLinkThisGc.test(m.body);
+            if (isgclink) {
+                await sock.sendMessage(m.from, { text: `The link you shared is for this group, so you won't be removed.` });
+                return;
+            }
+            if (isAdmins) {
+                await sock.sendMessage(m.from, { text: `Admins are allowed to share links.` });
+                return;
+            }
+            if (isCreator) {
+                await sock.sendMessage(m.from, { text: `The owner is allowed to share links.` });
+                return;
+            }
 
-            const userWarnings = antilinkSettings[m.from].warnings[m.sender];
-            const maxWarnings = config.ANTILINK_WARNINGS || 5;
+            // Send warning message first
+            await sock.sendMessage(m.from, {
+                text: `\`\`\`「 Group Link Detected 」\`\`\`\n\n@${m.sender.split("@")[0]}, please do not share group links in this group.`,
+                contextInfo: { mentionedJid: [m.sender] }
+            }, { quoted: m });
 
-            if (userWarnings >= maxWarnings) {
+            // Delete the link message
+            await sock.sendMessage(m.from, {
+                delete: {
+                    remoteJid: m.from,
+                    fromMe: false,
+                    id: m.key.id,
+                    participant: m.key.participant
+                }
+            });
+
+            // Wait for a short duration before kicking
+            setTimeout(async () => {
                 await sock.groupParticipantsUpdate(m.from, [m.sender], 'remove');
-                delete antilinkSettings[m.from].warnings[m.sender];
-                return await sock.sendMessage(m.from, { text: `🚫 *@${m.sender.split('@')[0]} removed for exceeding ${maxWarnings} warnings!*`, mentions: [m.sender] });
-            } else {
-                return await sock.sendMessage(m.from, {
-                    text: `⚠️ *Warning ${userWarnings}/${maxWarnings}:*\n@${m.sender.split('@')[0]} *Links are not allowed!*`,
-                    mentions: [m.sender],
-                }, { quoted: m });
-            }
+            }, 5000); // 5 seconds delay before kick
         }
     }
 };

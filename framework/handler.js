@@ -39,11 +39,6 @@ const Handler = async (chatUpdate, sock, logger) => {
         const prefix = prefixMatch ? prefixMatch[0] : '/';
         const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
         const text = m.body.slice(prefix.length + cmd.length).trim();
-
-        if (m.key && m.key.remoteJid === 'status@broadcast' && config.AUTO_STATUS_SEEN) {
-            await sock.readMessages([m.key]);
-        }
-
         const botNumber = await sock.decodeJid(sock.user.id);
         const ownerNumber = config.OWNER_NUMBER + '@s.whatsapp.net';
         let isCreator = false;
@@ -63,29 +58,36 @@ const Handler = async (chatUpdate, sock, logger) => {
         await handleAntilink(m, sock, logger, isBotAdmins, isAdmins, isCreator);
 
         const { isGroup, type, sender, from, body } = m;
-        console.log(m);
+      //  console.log(m);
 
-        const pluginDir = path.join(__dirname, '..', 'commandes');
-        const pluginFiles = await fs.readdir(pluginDir);
+        // ✅ Corrected Plugin Folder Path
+        const pluginDir = path.resolve(__dirname, '..', 'commades');  
+        
+        try {
+            const pluginFiles = await fs.readdir(pluginDir);
 
-        for (const file of pluginFiles) {
-            if (file.endsWith('.js')) {
-                const pluginPath = path.join(pluginDir, file);
-               // console.log(`Attempting to load plugin: ${pluginPath}`);
-
-                try {
-                    const pluginModule = await import(`file://${pluginPath}`);
-                    const loadPlugins = pluginModule.default;
-                    await loadPlugins(m, sock);
-                   // console.log(`Successfully loaded plugin: ${pluginPath}`);
-                } catch (err) {
-                    console.error(`Failed to load plugin: ${pluginPath}`, err);
+            for (const file of pluginFiles) {
+                if (file.endsWith('.js')) {
+                    const pluginPath = path.join(pluginDir, file);
+                    
+                    try {
+                        const pluginModule = await import(`file://${pluginPath}`);
+                        const loadPlugins = pluginModule.default;
+                        await loadPlugins(m, sock);
+                    } catch (err) {
+                        console.error(`Failed to load plugin: ${pluginPath}`, err);
+                    }
                 }
             }
+        } catch (err) {
+            console.error(`Plugin folder not found: ${pluginDir}`, err);
         }
+
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 };
 
 export default Handler;
+        
+            
