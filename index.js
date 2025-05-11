@@ -9,7 +9,7 @@ import {
     useMultiFileAuthState,
     getContentType
 } from '@whiskeysockets/baileys';
-import { Handler, Callupdate, GroupUpdate } from './framework/joel.js';
+import { Handler, Callupdate, GroupUpdate } from './commandes/framework/index.js';
 import express from 'express';
 import pino from 'pino';
 import fs from 'fs';
@@ -120,16 +120,15 @@ async function start() {
                     Matrix.sendMessage(Matrix.user.id, {
                         image: { url: "https://files.catbox.moe/rmlaec.jpg" },
                         caption: `
-╔[ HUNTER-MD-BOT SYSTEM BOOTED ]
+╔[ HUNTER-MD-BOT ]
 ║ 🤖 Name   : HUNTER-MD-BOT 
 ║ 👑 Owner  : ${config.OWNER_NAME}
 ║ ⚙️ Mode   :   ${config.MODE}
-║ 🧭 Prefix :  ${config.PREFIX}
-║ ✅ Status : OPERATIONAL           
-╚═════════════════════╝
+║ 🧭 Prefix :  ${config.PREFIX}           
+╚═════════════════╝
 
-▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
-*POWERED BY THE HUNTER-MD ENGINE *`
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+*POWERED BY THE HUNTER-MD*`
                     });
                     initialConnection = false;
                 } else {
