@@ -61,7 +61,7 @@ const Handler = async (chatUpdate, sock, logger) => {
       //  console.log(m);
 
         // ✅ Corrected Plugin Folder Path
-        const pluginDir = path.resolve(__dirname, '..', 'commades');  
+        const pluginDir = path.resolve(__dirname, '..', 'commandes');  
         
         try {
             const pluginFiles = await fs.readdir(pluginDir);
