@@ -1,69 +1,58 @@
-// HUNTER-MD-BOT config.js
+
+// joel Xmd config.js
 const fs = require("fs");
 require("dotenv").config();
 
 const config = {
-
-  //==============================//
-  //        BOT IDENTITY         //
-  //==============================//
-  BOT_NAME: process.env.BOT_NAME || "HUNTER-MD-BOT",
-  BOT: process.env.BOT || "Hello from HUNTER-MD-BOT 👋",
-  OWNER_NAME: process.env.OWNER_NAME || "ʟᴏʀᴅ ᴊᴏᴇʟ",
-  OWNER_NUMBER: process.env.OWNER_NUMBER || "255654464348",
-  SUDO_NUMBER: process.env.SUDO_NUMBER || "255654464348",
-  SESSION_ID: process.env.SESSION_ID || "HUNTER~MD~SESSION",
+  SESSION_ID: process.env.SESSION_ID || "HUNTER-MD-BOT",
   PREFIX: process.env.PREFIX || '.',
-  MODE: process.env.MODE || "public",
-  CAPTION: process.env.CAPTION || "ᴘᴏᴡᴇʀᴇᴅ ʙʏ HUNTER-MD-BOT",
-  NEW_CMD: process.env.NEW_CMD || "ᴀᴅᴅᴠᴀʀ\n│ sᴜᴅᴏ\n| hunter",
-
-  //==============================//
-  //     STATUS & PRESENCE       //
-  //==============================//
-  AUTO_STATUS_SEEN: process.env.AUTO_STATUS_SEEN === 'true',
-  AUTO_STATUS_REACT: process.env.AUTO_STATUS_REACT === 'true',
-  AUTO_BIO: process.env.AUTO_BIO === 'false',
-  ALWAYS_ONLINE: process.env.ALWAYS_ONLINE === 'true',
-  STATUS_READ_MSG: process.env.STATUS_READ_MSG || 'Status Viewed by HUNTER-MD',
-  AUTOLIKE_EMOJI: process.env.AUTOLIKE_EMOJI || '💚',
-
-  //==============================//
-  //       AUTO ACTIONS          //
-  //==============================//
-  AUTO_READ: process.env.AUTO_READ === 'false',
-  AUTO_TYPING: process.env.AUTO_TYPING === 'false',
-  AUTO_RECORDING: process.env.AUTO_RECORDING === 'false',
-  AUTO_REACT: process.env.AUTO_REACT === 'false',
-  AUTO_STICKER: process.env.AUTO_STICKER === 'true',
-  AUTO_REPLY_STATUS: process.env.AUTO_REPLY_STATUS === 'false',
-
-  //==============================//
-  //     SECURITY & GUARDS       //
-  //==============================//
-  ANTILINK: process.env.ANTILINK === 'false',
-  ANTI_DELETE: process.env.ANTI_DELETE === 'true',
-  ANTI_LEFT: process.env.ANTI_LEFT !== undefined ? process.env.ANTI_LEFT === 'true' : false,
-  AUTO_BLOCK: process.env.AUTO_BLOCK !== undefined ? process.env.AUTO_BLOCK === 'true' : false,
-  REJECT_CALL: process.env.REJECT_CALL === 'true',
-  NOT_ALLOW: process.env.NOT_ALLOW !== undefined ? process.env.NOT_ALLOW === 'true' : false,
-
-  //==============================//
-  //        CHATBOT SETTINGS     //
-  //==============================//
-  CHAT_BOT: process.env.CHAT_BOT === 'false',
+//let's add menu captions by lord joel
+   BOT_NAME: process.env.BOT_NAME || "HUNTER-MD-BOT",
+   BOT: process.env.BOT || "hello 👋",
+  // lets add new cmd by lord joel
+  NEW_CMD: process.env.NEW_CMD || "ᴀᴅᴅᴠᴀʀ\n│ sᴜᴅᴏ\n| joel",
+  CAPTION: process.env.CAPTION|| "HUNTER-MD-BOT",
+// don't use my codes without a permission 🙏
+  AUTO_STATUS_SEEN: process.env.AUTO_STATUS_SEEN !== undefined ? process.env.AUTO_STATUS_SEEN === 'true' : true,
+  AUTO_BIO: process.env.AUTO_BIO !== undefined ? process.env.AUTO_BIO === 'true' : true,
+  AUTO_STATUS_REACT: process.env.AUTO_STATUS_REACT !== undefined ? process.env.AUTO_STATUS_REACT === 'true' : true,
+  /*anti left by joel xd tech*/
+  ANTI_LEFT: process.env.ANTI_LEFT !== undefined ? process.env.ANTI_LEFT === 'true' : true,
+  AUTOLIKE_EMOJI: process.env.AUTOLIKE_EMOJI || '💚', // For liking status updates(stories)
+  AUTO_REPLY_STATUS: process.env.AUTO_REPLY_STATUS !== undefined ? process.env.AUTO_REPLY_STATUS === 'true' : false,
+  STATUS_READ_MSG: process.env.STATUS_READ_MSG || 'Status Viewed by joel-Md',
+  VOICE_CHAT_BOT: process.env.VOICE_CHAT_BOT !== undefined ? process.env.VOICE_CHAT_BOT === 'true' : false,
+  AUTO_STATUS_REACT: process.env.AUTO_STATUS_REACT !== undefined ? process.env.AUTO_STATUS_REACT === 'true' : true,
+  ANTILINK: process.env.ANTILINK !== undefined ? process.env.ANTILINK === 'true' : false,
+  ANTI_LEFT: process.env.ANTI_LEFT !== undefined ? process.env.ANTI_LEFT === 'true' : true,
+  AUTO_STICKER: process.env.AUTO_STICKER !== undefined ? process.env.AUTO_STICKER === 'true' : false,
+  AUTO_READ: process.env.AUTO_READ !== undefined ? process.env.AUTO_READ === 'true' : false,
+  AUTO_TYPING: process.env.AUTO_TYPING !== undefined ? process.env.AUTO_TYPING === 'true' : false,
+  AUTO_RECORDING: process.env.AUTO_RECORDING !== undefined ? process.env.AUTO_RECORDING === 'true' : false,
+  ALWAYS_ONLINE: process.env.ALWAYS_ONLINE !== undefined ? process.env.ALWAYS_ONLINE === 'true' : false,
+  AUTO_REACT: process.env.AUTO_REACT !== undefined ? process.env.AUTO_REACT === 'true' : false,
+   /*auto block only for 212 */
+  AUTO_BLOCK: process.env.AUTO_BLOCK !== undefined ? process.env.AUTO_BLOCK === 'true' : true,
+  /*joel james tech added anti delete cmd*/
+  ANTI_DELETE: process.env.ANTI_DELETE !== undefined ? process.env.ANTI_DELETE === 'true' : false,
+  /*lets add auto bot respond*/
+  CHAT_BOT: process.env.CHAT_BOT !== undefined ? process.env.CHAT_BOT === 'true' : false,
+  /*lets add chat bot mode*/
   CHAT_BOT_MODE: process.env.CHAT_BOT_MODE || "public",
-  LYDEA: process.env.LYDEA === 'false',
-
-  //==============================//
-  //      INTEGRATIONS / API     //
-  //==============================//
+  /*how about Lydia chat bot*/
+  LYDEA: process.env.LYDEA !== undefined ? process.env.LYDEA === 'true' : false,
+  REJECT_CALL: process.env.REJECT_CALL !== undefined ? process.env.REJECT_CALL === 'true' : false, 
+  NOT_ALLOW: process.env.NOT_ALLOW !== undefined ? process.env.NOT_ALLOW === 'true' : true,
+  MODE: process.env.MODE || "public",
+  DELETED_MESSAGES_CHAT_ID: process.env.DELETED_MESSAGES_CHAT_ID || "1234567891@s.whatsapp.net",
+  OWNER_NAME: process.env.OWNER_NAME || "HUNTER-MD-BOT",
+  OWNER_NUMBER: process.env.OWNER_NUMBER || "255714595078",
+  SUDO_NUMBER: process.env.SUDO_NUMBER || "",
   GEMINI_KEY: process.env.GEMINI_KEY || "AIzaSyCUPaxfIdZawsKZKqCqJcC-GWiQPCXKTDc",
-
-  //==============================//
-  //         LOGGING             //
-  //==============================//
-  DELETED_MESSAGES_CHAT_ID: process.env.DELETED_MESSAGES_CHAT_ID || "255781144539@s.whatsapp.net",
+  WELCOME: process.env.WELCOME !== undefined ? process.env.WELCOME === 'true' : false, 
 };
 
+
 module.exports = config;
+
+  
