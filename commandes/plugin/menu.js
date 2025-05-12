@@ -10,8 +10,7 @@ const handleCommands = async (m, sock) => {
 ╭────❍ *HUNTER-MD-BOT MENU*
 │ *Prefix:* ${prefix}
 │ *Owner:* ${config.OWNER_NAME}
-│ *Uptime:* ${runtime(process.uptime())}
-│ *Users:* ${global.db.data ? Object.keys(global.db.data.users).length : 'N/A'}
+│ *theme:* hunter xmd
 ╰──────────────────────╯
 
 ┌───〔 ⚙️ GENERAL 〕
