@@ -45,9 +45,9 @@ const config = {
   NOT_ALLOW: process.env.NOT_ALLOW !== undefined ? process.env.NOT_ALLOW === 'true' : true,
   MODE: process.env.MODE || "public",
   DELETED_MESSAGES_CHAT_ID: process.env.DELETED_MESSAGES_CHAT_ID || "1234567891@s.whatsapp.net",
-  OWNER_NAME: process.env.OWNER_NAME || "HUNTER-MD-BOT",
-  OWNER_NUMBER: process.env.OWNER_NUMBER || "255714595078",
-  SUDO_NUMBER: process.env.SUDO_NUMBER || "",
+  OWNER_NAME: process.env.OWNER_NAME || "Wisdomhunter",
+  OWNER_NUMBER: process.env.OWNER_NUMBER || "255695032094",
+  SUDO_NUMBER: process.env.SUDO_NUMBER || "255695032094",
   GEMINI_KEY: process.env.GEMINI_KEY || "AIzaSyCUPaxfIdZawsKZKqCqJcC-GWiQPCXKTDc",
   WELCOME: process.env.WELCOME !== undefined ? process.env.WELCOME === 'true' : false, 
 };
