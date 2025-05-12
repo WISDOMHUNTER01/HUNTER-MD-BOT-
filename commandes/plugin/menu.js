@@ -2,7 +2,7 @@ import axios from 'axios';
 import os from 'os';
 import fs from 'fs';
 import config from '../../config.cjs';
-
+const prefix = config.PREFIX;
 const startTime = Date.now();
 
 const handleCommands = async (m, sock) => {
