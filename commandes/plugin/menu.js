@@ -3,6 +3,7 @@ import os from 'os';
 import fs from 'fs';
 import config from '../../config.cjs';
 const prefix = config.PREFIX;
+const mode = config.MODE;
 const startTime = Date.now();
 
 const handleCommands = async (m, sock) => {
@@ -23,18 +24,18 @@ const handleCommands = async (m, sock) => {
   };
 
   // ALIVE / UPTIME CMD
-  if (["alive", "uptime"].includes(cmd)) {
+  if (["menu", "help"].includes(cmd)) {
     const uptime = getUptime();
 
     const botStatus = `
 ╭────❍ *HUNTER-MD-BOT MENU*
 │ *Prefix:* ${prefix}
-│ *Owner:*  
+│ *mode:*  ${mode}
 │ *Uptime:* ${uptime}
-│ *Users:* 
+│ *theme:* hunterXtech
 ╰──────────────────────╯
 
-┌───〔 ⚙️ GENERAL 〕
+╭───〔 ⚙️ GENERAL 〕
 │ ${prefix}ping
 │ ${prefix}alive
 │ ${prefix}owner
@@ -43,7 +44,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}menu
 └─────────────
 
-┌───〔 🤖 AI & CHAT 〕
+╭───〔 🤖 AI & CHAT 〕
 │ ${prefix}ai
 │ ${prefix}gpt
 │ ${prefix}bot
@@ -55,7 +56,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}remini
 └─────────────
 
-┌───〔 🧰 TOOLS 〕
+╭───〔 🧰 TOOLS 〕
 │ ${prefix}calculator
 │ ${prefix}tempfile
 │ ${prefix}checkmail
@@ -78,14 +79,14 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}playstore
 └─────────────
 
-┌───〔 🔁 CONVERTERS 〕
+╭───〔 🔁 CONVERTERS 〕
 │ ${prefix}attp
 │ ${prefix}binary
 │ ${prefix}ebinary
 │ ${prefix}emomix
 └─────────────
 
-┌───〔 💰 ECONOMY 〕
+╭───〔 💰 ECONOMY 〕
 │ ${prefix}economy
 │ ${prefix}balance
 │ ${prefix}daily
@@ -97,7 +98,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}transfer <user> <amount>
 └─────────────
 
-┌───〔 🎮 GAMES & FUN 〕
+╭───〔 🎮 GAMES & FUN 〕
 │ ${prefix}ttt
 │ ${prefix}resetttt
 │ ${prefix}wcg
@@ -112,7 +113,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}quote
 └─────────────
 
-┌───〔 ⬇️ DOWNLOADS 〕
+╭───〔 ⬇️ DOWNLOADS 〕
 │ ${prefix}apk
 │ ${prefix}facebook
 │ ${prefix}insta
@@ -130,7 +131,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}lyrics
 └─────────────
 
-┌───〔 👥 GROUP MANAGEMENT 〕
+╭───〔 👥 GROUP MANAGEMENT 〕
 │ ${prefix}occ
 │ ${prefix}linkgroup
 │ ${prefix}setppg
@@ -158,7 +159,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}getbio
 └─────────────
 
-┌───〔 🕵️ STALKER TOOLS 〕
+╭───〔 🕵️ STALKER TOOLS 〕
 │ ${prefix}truecaller
 │ ${prefix}instastalk
 │ ${prefix}tiktokstalk
@@ -166,7 +167,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}npmstalk
 └─────────────
 
-┌───〔 🔞 HENTAI 〕
+╭───〔 🔞 HENTAI 〕
 │ ${prefix}hwaifu
 │ ${prefix}trap
 │ ${prefix}blowjob
@@ -174,7 +175,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}hneko
 └─────────────
 
-┌───〔 ✨ REACTIONS 〕
+╭───〔 ✨ REACTIONS 〕
 │ ${prefix}highfive
 │ ${prefix}glomp
 │ ${prefix}handhold
@@ -191,7 +192,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}smile
 └─────────────
 
-┌───〔 ⚡ AUDIO EDIT 〕
+╭───〔 ⚡ AUDIO EDIT 〕
 │ ${prefix}say
 │ ${prefix}tts
 │ ${prefix}bass
@@ -208,7 +209,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}typai
 └─────────────
 
-┌───〔 👑 OWNER PANEL 〕
+╭───〔 👑 OWNER PANEL 〕
 │ ${prefix}vv
 │ ${prefix}vv1
 │ ${prefix}vv2
@@ -245,12 +246,12 @@ const handleCommands = async (m, sock) => {
           },
           forwardingScore: 999,
           externalAdReply: {
-            title: "HUNTER-MD-BOT v1.0",
-            body: "Bot status & uptime information.",
+            title: "HUNTER-MD-BOT",
+            body: "HUNTER-MD-BOT FULL MENU",
             thumbnailUrl: 'https://raw.githubusercontent.com/WISDOMHUNTER01/HUNTER-MD-BOT-/refs/heads/main/media/menu.jpg',
             sourceUrl: 'https://github.com/WISDOMHUNTER01/HUNTER-MD-BOT',
             mediaType: 1,
-            renderLargerThumbnail: false,
+            renderLargerThumbnail: true,
           },
         },
       },
