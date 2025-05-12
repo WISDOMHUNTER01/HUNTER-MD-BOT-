@@ -1,16 +1,37 @@
+import axios from 'axios';
+import os from 'os';
+import fs from 'fs';
+import config from '../../config.cjs';
+
+const startTime = Date.now();
+
 const handleCommands = async (m, sock) => {
-  import config from '../../config.cjs';
-  const prefix = config.PREFIX;
+  
   const cmd = m.body.startsWith(prefix)
     ? m.body.slice(prefix.length).split(' ')[0].toLowerCase()
     : '';
+  const text = m.body.slice(prefix.length + cmd.length).trim();
 
-  if (cmd === 'menu') {
-    const caption = `
+  // UPTIME Function
+  const getUptime = () => {
+    const ms = Date.now() - startTime;
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  // ALIVE / UPTIME CMD
+  if (["alive", "uptime"].includes(cmd)) {
+    const uptime = getUptime();
+
+    const botStatus = `
 ╭────❍ *HUNTER-MD-BOT MENU*
 │ *Prefix:* ${prefix}
-│ *Owner:* ${config.OWNER_NAME}
-│ *theme:* hunter xmd
+│ *Owner:*  
+│ *Uptime:* ${uptime}
+│ *Users:* 
 ╰──────────────────────╯
 
 ┌───〔 ⚙️ GENERAL 〕
@@ -187,7 +208,7 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}typai
 └─────────────
 
- ┌───〔 👑 OWNER PANEL 〕
+┌───〔 👑 OWNER PANEL 〕
 │ ${prefix}vv
 │ ${prefix}vv1
 │ ${prefix}vv2
@@ -209,37 +230,38 @@ const handleCommands = async (m, sock) => {
 │ ${prefix}alwaysonline
 │ ${prefix}autoread
 │ ${prefix}autosview
-└─────────────
-    `.trim();
+└─────────────`;
 
     sock.sendMessage(
       m.from,
       {
-        text: caption,
+        text: botStatus,
         contextInfo: {
           isForwarded: false,
-          forwardingScore: 1000,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: '120363317462952356@newsletter',
+            newsletterName: "HUNTER-MD-BOT",
+            serverMessageId: -1,
+          },
+          forwardingScore: 999,
           externalAdReply: {
-            title: "HUNTER-MD-BOT Full Command Menu",
-            body: "",
-            thumbnailUrl: "https://raw.githubusercontent.com/WISDOMHUNTER01/HUNTER-MD-BOT-/refs/heads/main/media/menu.jpg",
+            title: "HUNTER-MD-BOT v1.0",
+            body: "Bot status & uptime information.",
+            thumbnailUrl: 'https://raw.githubusercontent.com/WISDOMHUNTER01/HUNTER-MD-BOT-/refs/heads/main/media/menu.jpg',
+            sourceUrl: 'https://github.com/WISDOMHUNTER01/HUNTER-MD-BOT',
             mediaType: 1,
-            sourceUrl: "https://github.com/WISDOMHUNTER01/HUNTER-MD-BOT",
-            renderLargerThumbnail: true
-          }
-        }
+            renderLargerThumbnail: false,
+          },
+        },
       },
       { quoted: m }
     );
   }
 };
 
-function runtime(seconds) {
-  const pad = (s) => (s < 10 ? '0' + s : s);
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${pad(hrs)}h ${pad(mins)}m ${pad(secs)}s`;
-}
-
 export default handleCommands;
+
+
+
+
+
