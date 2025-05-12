@@ -17,10 +17,10 @@ const antiDeleteGlobal = config.ANTI_DELETE;
 
 const demonContext = {
   forwardingScore: 999,
-  isForwarded: true,
+  isForwarded: false,
   forwardedNewsletterMessageInfo: {
     newsletterJid: '120363317462952356@newsletter',
-    newsletterName: "ᴊᴏᴇʟ xᴍᴅ ʙᴏᴛ ᴠ¹⁰",
+    newsletterName: "HUNTER-MD-BOT",
     serverMessageId: 143
   }
 };
@@ -93,7 +93,7 @@ const AntiDelete = async (m, Matrix) => {
   if (m.body.toLowerCase() === `${prefix}antidelete on` || m.body.toLowerCase() === `${prefix}antidelete off`) {
     const responses = {
       on: {
-        text: `🛡️ *Joel-XMD Anti-Delete Activated!*\n\n` +
+        text: `🛡️ *HUNTER-MD-BOT Anti-Delete Activated!*\n\n` +
               `• Status: ✅ Enabled\n` +
               `• Cache: 🕒 5 minutes\n` +
               `• Mode: 🌐 Global\n\n` +
@@ -103,11 +103,11 @@ const AntiDelete = async (m, Matrix) => {
         contextInfo: demonContext
       },
       off: {
-        text: `⛔ *Joel-XMD Anti-Delete Deactivated!*\n\n` +
+        text: `⛔ *HUNTER-MD-BOT Anti-Delete Deactivated!*\n\n` +
               `• Status: ❌ Disabled\n\n` +
               `_Message recovery disabled_\n\n` +
               `━━━━━━⊱✿⊰━━━━━━\n` +
-              `ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴏʀᴅ ᴊᴏᴇʟ`,
+              `POWERES BY HUNTER-MD-BOT`,
         contextInfo: demonContext
       }
     };
@@ -219,7 +219,7 @@ const AntiDelete = async (m, Matrix) => {
           `⏰ *Sent At:* ${demonDelete.formatTime(cachedMsg.timestamp)}\n` +
           `🕰️ *Deleted At:* ${demonDelete.formatTime(Date.now())}\n\n` +
           `━━━━━━━━━━━━━━━\n` +
-          `ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴏʀᴅ ᴊᴏᴇʟ`;
+          `POWERED BY HUNTER-MD-BOT`;
 
         if (cachedMsg.media) {
           await Matrix.sendMessage(cachedMsg.chatJid, {

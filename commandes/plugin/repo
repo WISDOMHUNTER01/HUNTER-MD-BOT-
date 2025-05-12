@@ -1,0 +1,63 @@
+import axios from 'axios'; // Ensure axios is imported
+import config from '../../config.cjs'; // Ensure this matches your project setup
+
+const handleCommands = async (m, sock) => {
+  const prefix = config.PREFIX;
+  const cmd = m.body.startsWith(prefix)
+    ? m.body.slice(prefix.length).split(' ')[0].toLowerCase()
+    : '';
+  const text = m.body.slice(prefix.length + cmd.length).trim();
+
+  // Repo Command (fetches info about HUNTER-MD-BOT repository)
+  if (cmd === "repo") {
+    try {
+      // Fetch repository data from GitHub API for HUNTER-MD-BOT
+      const response = await axios.get('https://api.github.com/repos/WISDOMHUNTER01/HUNTER-MD-BOT-'); 
+
+      const repoData = response.data;
+
+      const repoInfo = `*HUNTER-MD-BOT Repository Information*\n\n` +
+        `*Name:* ${repoData.name}\n` +
+        `*Description:* ${repoData.description || "No description provided"}\n` +
+        `*Stars:* ${repoData.stargazers_count}\n` +
+        `*Forks:* ${repoData.forks_count}\n` +
+        `*Language:* ${repoData.language || "N/A"}\n` +
+        `*Last Updated:* ${new Date(repoData.updated_at).toLocaleString()}\n` +
+        `*Open Issues:* ${repoData.open_issues_count}\n` +
+        `*Owner:* [${repoData.owner.login}](https://github.com/${repoData.owner.login})\n` +
+        `*Repository URL:* [Click here](${repoData.html_url})\n`;
+
+      // Send the repo info to the user
+      sock.sendMessage(
+        m.from,
+        {
+          text: repoInfo,
+          contextInfo: {
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+              newsletterJid: '120363317462952356@newsletter',
+              newsletterName: "HUNTER-MD-BOT",
+              serverMessageId: -1,
+            },
+            forwardingScore: 999, 
+            externalAdReply: {
+              title: "HUNTER-MD-BOT v1.0",
+              body: "Here is the repository information of HUNTER-MD-BOT.",
+              thumbnailUrl: 'https://raw.githubusercontent.com/WISDOMHUNTER01/HUNTER-MD-BOT-/refs/heads/main/media/menu.jpg', // Thumbnail
+              sourceUrl: 'https://github.com/WISDOMHUNTER01/HUNTER-MD-BOT', 
+              mediaType: 1,
+              renderLargerThumbnail: false,
+            },
+          },
+        },
+        { quoted: m }
+      );
+    } catch (error) {
+      console.error("Error fetching repository data:", error);
+      sock.sendMessage(m.from, { text: "Sorry, something went wrong while fetching the repository data." }, { quoted: m });
+    }
+  }
+};
+
+// Export the handleCommands function to be used in the bot
+export default handleCommands;

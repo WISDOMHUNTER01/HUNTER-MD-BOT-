@@ -1,5 +1,3 @@
-
-
 /*                                   
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ─██████──────────██████████████──████████████████────████████████────────────────────────────██████──██████████████──██████████████──██████─────────
@@ -44,51 +42,81 @@ CURRENTLY RUNNING ON BETA VERSION!!
 
 
 
-import axios from 'axios';
+
+
+
+
+
+import fs from 'fs';
+import moment from 'moment-timezone';
 import config from '../../config.cjs';
-global.nex_key = 'https://api.nexoracle.com';
-global.nex_api = 'free_key@maher_apis';
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const imageCommand = async (m, sock) => {
+const rank = async (m, sock) => {
   const prefix = config.PREFIX;
-  const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
-  let query = m.body.slice(prefix.length + cmd.length).trim();
+  const cmd = m.body.startsWith(prefix)
+    ? m.body.slice(prefix.length).split(' ')[0].toLowerCase()
+    : '';
 
-  const validCommands = ['image', 'img', 'gimage'];
+  if (cmd === "rank") {
+    await m.React('💭'); // React with a thinking icon
+    
+    // Sample data: You can replace this with your actual leaderboard data
+    const leaderboard = [
+      { name: "User1", points: 1000 },
+      { name: "User2", points: 900 },
+      { name: "User3", points: 800 },
+      { name: "User4", points: 700 },
+      { name: "User5", points: 600 },
+    ];
 
-  if (validCommands.includes(cmd)) {
-    if (!query && !(m.quoted && m.quoted.text)) {
-      return sock.sendMessage(m.from, { text: `Please provide some text, Example usage: ${prefix + cmd} black cats` });
-    }
+    // Sort the leaderboard by points (descending)
+    leaderboard.sort((a, b) => b.points - a.points);
 
-    if (!query && m.quoted && m.quoted.text) {
-      query = m.quoted.text;
-    }
+    // Find the rank of the user who sent the command
+    const userRank = leaderboard.findIndex(user => user.name === m.pushName) + 1;
+    const userPoints = leaderboard[userRank - 1] ? leaderboard[userRank - 1].points : 0;
 
-    try {
-      await sock.sendMessage(m.from, { text: '*Please wait*' });
+    let rankMessage = `👑 *Rank Information*\n\n`;
+    rankMessage += `*Your Rank*: ${userRank} / ${leaderboard.length}\n`;
+    rankMessage += `*Your Points*: ${userPoints}\n\n`;
 
-      const endpoint = `${global.nex_key}/search/google-image?apikey=${global.nex_api}&q=${encodeURIComponent(query)}`;
-      const response = await axios.get(endpoint);
+    rankMessage += `╭──❍ 「 *Leaderboard* 」❍\n`;
 
-      if (response.status === 200 && response.data.result && response.data.result.length > 0) {
-        const images = response.data.result.slice(0, 5); // Limit to 5 images
+    // Display top 5 users (or all, if you prefer)
+    leaderboard.slice(0, 5).forEach((user, index) => {
+      rankMessage += `│ ${index + 1}. ${user.name} - ${user.points} points\n`;
+    });
 
-        for (let i = 0; i < images.length; i++) {
-          await sleep(500);
-          await sock.sendMessage(m.from, { image: { url: images[i] }, caption: '*POWERED BY HUNTER-MD-BOT*' }, { quoted: m });
-        }
-        await m.React("✅");
-      } else {
-        throw new Error('No images found');
-      }
-    } catch (error) {
-      console.error("Error fetching images:", error);
-      await sock.sendMessage(m.from, { text: `*Oops! Something went wrong while generating images. Please try again later.*\n\nError: ${error}` });
-    }
+    rankMessage += `╰─────────────────❍`;
+
+    await m.React('✔️'); // React with a success icon
+
+    // Send the rank message
+    sock.sendMessage(
+      m.from,
+      {
+        text: rankMessage,
+        contextInfo: {
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: '120363317462952356@newsletter',
+            newsletterName: "ᴊᴏᴇʟ xᴅ ʙᴏᴛ",
+            serverMessageId: -1,
+          },
+          forwardingScore: 999, // Score to indicate it has been forwarded
+          externalAdReply: {
+            title: "ᴊᴏᴇʟ xᴅ ʙᴏᴛ ᴠ ⁷",
+            body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴏʀᴅ ᴊᴏᴇʟ",
+            thumbnailUrl: 'https://raw.githubusercontent.com/joeljamestech2/JOEL-XMD/refs/heads/main/mydata/media/joelXbot.jpg', // Add thumbnail URL if required
+            sourceUrl: 'https://whatsapp.com/channel/0029Vak2PevK0IBh2pKJPp2K', // Add source URL if necessary
+            mediaType: 1,
+            renderLargerThumbnail: true,
+          },
+        },
+      },
+      { quoted: m }
+    );
   }
 };
 
-export default imageCommand;
+export default rank;

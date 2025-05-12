@@ -1,5 +1,3 @@
-
-
 /*                                   
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ─██████──────────██████████████──████████████████────████████████────────────────────────────██████──██████████████──██████████████──██████─────────
@@ -16,79 +14,97 @@
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 made by lord joel
 contact owner +2557114595078
-
-CURRENTLY RUNNING ON BETA VERSION!!
-*
-   * @project_name : JOEL XMD
-   * @author : LORD_JOEL
-   * @youtube : https://www.youtube.com/@joeljamestech255
-   * @infoription : joel Md ,A Multi-functional whatsapp user bot.
-   * @version 10 
-*
-   * Licensed under the  GPL-3.0 License;
-* 
-   * ┌┤Created By joel tech info.
-   * © 2025 joel md ✭ ⛥.
-   * plugin date : 11/1/2025
-* 
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   * SOFTWARE.
 */
 
 
 
 
 
+
+
+
+
+
 import axios from 'axios';
-import config from '../../config.cjs';
-global.nex_key = 'https://api.nexoracle.com';
-global.nex_api = 'free_key@maher_apis';
+import config from '../../config.cjs';  // Your bot configuration
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const imageCommand = async (m, sock) => {
-  const prefix = config.PREFIX;
-  const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
-  let query = m.body.slice(prefix.length + cmd.length).trim();
-
-  const validCommands = ['image', 'img', 'gimage'];
-
-  if (validCommands.includes(cmd)) {
-    if (!query && !(m.quoted && m.quoted.text)) {
-      return sock.sendMessage(m.from, { text: `Please provide some text, Example usage: ${prefix + cmd} black cats` });
-    }
-
-    if (!query && m.quoted && m.quoted.text) {
-      query = m.quoted.text;
-    }
-
-    try {
-      await sock.sendMessage(m.from, { text: '*Please wait*' });
-
-      const endpoint = `${global.nex_key}/search/google-image?apikey=${global.nex_api}&q=${encodeURIComponent(query)}`;
-      const response = await axios.get(endpoint);
-
-      if (response.status === 200 && response.data.result && response.data.result.length > 0) {
-        const images = response.data.result.slice(0, 5); // Limit to 5 images
-
-        for (let i = 0; i < images.length; i++) {
-          await sleep(500);
-          await sock.sendMessage(m.from, { image: { url: images[i] }, caption: '*POWERED BY HUNTER-MD-BOT*' }, { quoted: m });
-        }
-        await m.React("✅");
-      } else {
-        throw new Error('No images found');
-      }
-    } catch (error) {
-      console.error("Error fetching images:", error);
-      await sock.sendMessage(m.from, { text: `*Oops! Something went wrong while generating images. Please try again later.*\n\nError: ${error}` });
-    }
+// Helper function to fetch and send an image
+const sendImage = async (m, sock, imageUrl, caption) => {
+  try {
+    await sock.sendMessage(m.from, {
+      image: { url: imageUrl },
+      caption: caption,
+    });
+    await m.React('✅');  // React with a success icon
+  } catch (error) {
+    console.error(error);
+    await sock.sendMessage(m.from, {
+      text: 'Sorry, something went wrong while fetching the image!',
+    });
   }
 };
 
-export default imageCommand;
+// Command parsing function
+const parseCommand = (message) => {
+  const prefix = config.PREFIX;
+  if (message.body.startsWith(prefix)) {
+    return message.body.slice(prefix.length).split(' ')[0].toLowerCase();
+  }
+  return '';
+};
+
+// Check if the command is NSFW related
+const isNsfwCommand = (cmd) => ['hwaifu', 'trap', 'hneko'].includes(cmd);
+
+const getNsfwImage = async (m, sock) => {
+  const cmd = parseCommand(m);
+
+  // If the command is not valid, do nothing
+  if (!isNsfwCommand(cmd)) return;
+
+  const botNumber = config.SUDO_NUMBER;  // The bot's phone number (without the + sign, e.g. "1234567890")
+  const ownerNumber = config.OWNER_NUMBER;  // The bot owner's phone number (without the + sign, e.g. "0987654321")
+
+  // If the message is from a group and the sender is neither the bot nor the owner, send a warning
+  if (m.isGroup && m.from !== botNumber && m.from !== ownerNumber) {
+    await sock.sendMessage(m.from, {
+      text: 'This group is not a group of perverts, calm down my friend.',
+    });
+    return; // Stop further execution for non-bot/owner senders in group chats
+  }
+
+  // React with a loading icon for private chats or if the bot/owner sends in a group
+  await m.React('💬');  
+
+  let endpoint = '';
+  let caption = '';
+
+  // Determine the correct endpoint and caption based on the command
+  if (cmd === 'hwaifu') {
+    endpoint = 'nsfw/waifu';
+    caption = 'Here is your random NSFW Waifu image!';
+  } else if (cmd === 'trap') {
+    endpoint = 'nsfw/trap';
+    caption = 'Here is your random NSFW Trap image!';
+  } else if (cmd === 'hneko') {
+    endpoint = 'nsfw/neko';
+    caption = 'Here is your random NSFW Neko image!';
+  }
+
+  try {
+    // Fetch random NSFW image from the appropriate waifu.pics API endpoint
+    const response = await axios.get(`https://api.waifu.pics/${endpoint}`);
+    const imageUrl = response.data.url;  // Extract the image URL
+
+    // Send the image
+    await sendImage(m, sock, imageUrl, caption);
+
+  } catch (error) {
+    console.error(error);
+    await sock.sendMessage(m.from, {
+      text: 'Sorry, something went wrong while fetching the image!',
+    });
+  }
+};
+
+export default getNsfwImage;

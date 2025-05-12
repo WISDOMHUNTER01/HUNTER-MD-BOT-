@@ -25,8 +25,8 @@ contact owner +2557114595078
 import config from '../../config.cjs';
 import fetch from 'node-fetch';
 
-const POWERED_BY = '━ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴏʀᴅ ᴊᴏᴇʟ ━';
-const BOT_NAME = 'ᴊᴏᴇʟ ᴇxᴛʀᴇᴍᴇ ᴍᴅ';
+const POWERED_BY = 'HUNTER-MD-BOT';
+const BOT_NAME = 'HUNTER-MD-BOT';
 
 const downloadCommand = async (m, Matrix) => {
   const prefix = config.PREFIX;
@@ -132,7 +132,7 @@ ${POWERED_BY}`;
 ┃▢  *File:*  ${fileName}
 ┃▢  *Type:*  ${fileType || 'Unknown'}
 ╰━━━━━━━━━━━━━━━━━━━⊷
-${POWERED_BY}`;
+ HUNTER-MD-BOT`;
 
       await Matrix.sendMessage(m.from, {
         document: { url: dl_link },
@@ -172,7 +172,7 @@ ${POWERED_BY}`;
 ┃▢  *Updated:*  ${app.updated}
 ┃▢  *Dev:*  ${app.developer.name}
 ╰━━━━━━━━━━━━━━━━━⊷
-${config.CAPTION}`;
+POWERED BY HUNTER-MD-BOT`;
 
       await Matrix.sendMessage(m.from, {
         document: { url: app.file.path_alt },
@@ -206,7 +206,7 @@ ${config.CAPTION}`;
 ┃▢  *File:*  ${data.result.fileName}
 ┃▢  *Size:*  ${data.result.fileSize || 'Unknown'}
 ╰━━━━━━━━━━━━━━━━⊷
-${POWERED_BY}`;
+HUNTER-MD-BOT`;
 
       await Matrix.sendMessage(m.from, {
         document: { url: data.result.downloadUrl },

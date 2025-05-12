@@ -109,7 +109,7 @@ const tourl = async (m, bot) => {
       } else {
         const message = {
           [mediaType]: { url: mediaUrl },
-          caption: `*ᴜʀʟ:* *${mediaUrl}*\n\n*ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴏʀᴅ ᴊᴏᴇʟ*`,
+          caption: `${mediaUrl}`,
         };
         await bot.sendMessage(m.from, message, { quoted: m });
       }
