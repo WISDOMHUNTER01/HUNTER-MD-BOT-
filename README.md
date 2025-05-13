@@ -21,7 +21,7 @@
 
 ### ✅ 2. GENERATE SESSION
 
-<a href="https://getsession-9a04ec726730.herokuapp.com/"><img title="Get Qr Session" src="https://img.shields.io/badge/SESSION-ID-red?style=for-the-badge&logo=whatsapp" /></a>
+<a href="https://pair-hunter-d5a336b34a28.herokuapp.com/pair"><img title="Get Qr Session" src="https://img.shields.io/badge/SESSION-ID-red?style=for-the-badge&logo=whatsapp" /></a>
 
 ---
 
